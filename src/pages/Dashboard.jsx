@@ -1,15 +1,25 @@
-// import React from "react";
-// import { signOut } from "firebase/auth";
-// import { auth } from "../firebase";
-// import { useNavigate } from "react-router-dom";
-
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import { useUser } from "../context/UserContext"; // ✅ Import user context
 
+// 🔹 Summary Card Component
+const SummaryCard = ({ title, value, color }) => (
+  <div className={`rounded-lg p-4 text-white shadow-md ${color}`}>
+    <h3 className="text-lg font-semibold">{title}</h3>
+    <p className="text-2xl mt-2">{value}</p>
+  </div>
+);
+
+// 🔹 Dashboard Component
 const Dashboard = () => {
-  const [transactions, setTransactions] = useState([]);
+  const navigate = useNavigate();
+  const { user, updateUser } = useUser(); // ✅ Access user and updater
   const [amount, setAmount] = useState("");
   const [type, setType] = useState("income");
   const [category, setCategory] = useState("");
+
+  const transactions = user?.transactions || [];
 
   const totalIncome = transactions
     .filter((t) => t.type === "income")
@@ -30,17 +40,23 @@ const Dashboard = () => {
       type,
       category,
     };
-    setTransactions([...transactions, newTransaction]);
+
+    // ✅ Update context state
+    updateUser({
+      ...user,
+      transactions: [...transactions, newTransaction],
+    });
+
+    // Reset form
     setAmount("");
     setCategory("");
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <h1 className="text-3xl font-bold text-gray-800">HustleStack Dashboard</h1>
+    <div className="min-h-screen bg-gray-100">
+      <Navbar />
 
+      <div className="p-6 max-w-6xl mx-auto space-y-8">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <SummaryCard title="Balance" value={`$${balance.toFixed(2)}`} color="bg-blue-500" />
@@ -86,16 +102,8 @@ const Dashboard = () => {
             </button>
           </form>
         </div>
-        {/* Analytics Page button */}
-        <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">Dashboard</h2>
-        <button
-          onClick={() => navigate("/analytics")}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow"
-        >View Analytics</button>
-      </div>
 
-        {/* Transactions Preview Table (Optional) */}
+        {/* Transactions Table */}
         <div className="bg-white p-6 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-4 text-gray-700">Recent Transactions</h2>
           <table className="w-full table-auto text-left border-collapse">
@@ -128,12 +136,5 @@ const Dashboard = () => {
     </div>
   );
 };
-
-const SummaryCard = ({ title, value, color }) => (
-  <div className={`rounded-lg p-4 text-white shadow-md ${color}`}>
-    <h3 className="text-lg font-semibold">{title}</h3>
-    <p className="text-2xl mt-2">{value}</p>
-  </div>
-);
 
 export default Dashboard;
