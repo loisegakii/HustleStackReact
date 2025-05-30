@@ -1,32 +1,36 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-export const UserContext = createContext();
+// Create context
+const UserContext = createContext();
 
+// Create provider
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "123-456-7890",
-    photoUrl: "https://via.placeholder.com/150",
-  });
+  const [user, setUser] = useState(null);
 
-  const [transactions, setTransactions] = useState([]);
+  // Try to load user from localStorage on initial load
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
-  // Function to update user info
-  const updateUser = (newUserData) => {
-    setUser(prev => ({ ...prev, ...newUserData }));
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
   };
 
-  // Function to add new transaction
-  const addTransaction = (transaction) => {
-    setTransactions(prev => [...prev, transaction]);
+  const clearUser = () => {
+    setUser(null);
+    localStorage.removeItem("user");
   };
 
   return (
-    <UserContext.Provider value={{ user, updateUser, transactions, addTransaction }}>
+    <UserContext.Provider value={{ user, updateUser, clearUser }}>
       {children}
     </UserContext.Provider>
   );
 };
 
+// Custom hook
 export const useUser = () => useContext(UserContext);

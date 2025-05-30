@@ -1,83 +1,70 @@
-
-import { Line, Doughnut } from 'react-chartjs-2';
-import { useRef } from 'react';
-import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, ArcElement, Tooltip, Legend } from 'chart.js';
+// src/pages/Analytics.jsx
+import React, { useRef } from 'react';
+import { useTransactions } from '../context/TransactionContext';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import Navbar from '../components/Navbar';
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, ArcElement, Tooltip, Legend);
+const Analytics = () => {
+  const { transactions } = useTransactions();
+  const reportRef = useRef();
 
-function Analytics() {
-  const lineRef = useRef(null);
-  const doughnutRef = useRef(null);
-
-  const exportChartAsImage = async () => {
-    const canvas = lineRef.current.canvas;
-    const image = await html2canvas(canvas.parentNode);
-    const link = document.createElement("a");
-    link.download = "analytics.png";
-    link.href = image.toDataURL("image/png");
-    link.click();
-  };
-
-  const monthlyData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-    datasets: [
-      {
-        label: 'Income',
-        data: [1200, 1500, 1000, 1800, 1600],
-        borderColor: '#16a34a',
-        backgroundColor: '#bbf7d0',
-        tension: 0.4,
-        fill: true,
-      },
-      {
-        label: 'Expenses',
-        data: [900, 1100, 950, 1200, 1400],
-        borderColor: '#ef4444',
-        backgroundColor: '#fecaca',
-        tension: 0.4,
-        fill: true,
-      },
-    ],
-  };
-
-  const categoryData = {
-    labels: ['Rent', 'Groceries', 'Transport', 'Utilities', 'Entertainment'],
-    datasets: [
-      {
-        label: 'Expense Distribution',
-        data: [500, 300, 200, 150, 100],
-        backgroundColor: ['#f97316', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'],
-        borderWidth: 1,
-      },
-    ],
+  const handleDownloadPDF = async () => {
+    const canvas = await html2canvas(reportRef.current);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF();
+    pdf.addImage(imgData, 'PNG', 10, 10, 190, 100);
+    pdf.save('analytics-report.pdf');
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">Analytics Dashboard</h2>
-        <button
-          onClick={exportChartAsImage}
-          className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded shadow-md"
-        >
-          Export as Image
-        </button>
-      </div>
+    <div style={{ fontFamily: 'Segoe UI, sans-serif', background: '#f4f6f8', minHeight: '100vh' }}>
+      <Navbar />
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold text-gray-700 mb-4">Income vs Expenses (Monthly)</h3>
-          <Line ref={lineRef} data={monthlyData} />
+      <div style={{ padding: '40px', maxWidth: '1000px', margin: 'auto' }}>
+        <h1 style={{ textAlign: 'center', color: '#2c3e50', marginBottom: '30px' }}>📊 Analytics Overview</h1>
+
+        <div
+          ref={reportRef}
+          style={{
+            background: 'white',
+            padding: '30px',
+            borderRadius: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          }}
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={transactions}>
+              <CartesianGrid stroke="#e0e0e0" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="amount" stroke="#4e73df" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold text-gray-700 mb-4">Spending by Category</h3>
-          <Doughnut ref={doughnutRef} data={categoryData} />
+        <div style={{ textAlign: 'center', marginTop: '30px' }}>
+          <button
+            onClick={handleDownloadPDF}
+            style={{
+              background: '#4e73df',
+              color: 'white',
+              padding: '12px 24px',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '16px',
+              cursor: 'pointer',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            📥 Download PDF Report
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Analytics;

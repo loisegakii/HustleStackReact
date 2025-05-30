@@ -1,22 +1,22 @@
-
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // ✅ for `db`
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDGvcD3VU-RTIehIfmXwIpgjvQCMfHBPZk",
-  authDomain: "hustlestack-d2c5a.firebaseapp.com",
-  projectId: "hustlestack-d2c5a",
-  storageBucket: "hustlestack-d2c5a.firebasestorage.app",
-  messagingSenderId: "156961161928",
-  appId: "1:156961161928:web:99dae128b705b14b29dbfd",
-  measurementId: "G-CG5QBWMQV1"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
 };
 
-// Initialize Firebase
+// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-// Initialize Authentication
-const auth = getAuth(app);
 
-export { auth };
+// Initialize services
+const auth = getAuth(app);
+const db = getFirestore(app); // ✅ Create Firestore DB instance
+
+// ✅ Export what you use
+export { auth, db };

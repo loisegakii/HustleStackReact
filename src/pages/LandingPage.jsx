@@ -22,14 +22,16 @@ function LandingPage() {
 
       {/* Header */}
       <header className="flex justify-between items-center p-4 md:p-6 bg-white shadow-md sticky top-0 z-20">
-        <h1 className="text-2xl md:text-3xl font-extrabold text-green-600 tracking-tight select-none">HustleStack</h1>
+        <Link to="/" className="text-2xl md:text-3xl font-extrabold text-green-600 tracking-tight select-none">
+          HustleStack
+        </Link>
         <nav className="space-x-4">
           <Link to="/login" className="text-green-700 font-semibold hover:text-green-900 transition">Login</Link>
           <Link to="/signup" className="bg-gradient-to-r from-green-500 to-green-700 text-white px-5 py-2 rounded-lg shadow-md hover:from-green-600 hover:to-green-800 font-semibold">Get Started</Link>
         </nav>
       </header>
 
-      {/* Main Content: Fit to single screen */}
+      {/* Main Content */}
       <main className="flex flex-col-reverse md:flex-row items-center justify-between max-w-7xl mx-auto flex-grow px-4 py-4 md:py-8 gap-4 md:gap-10">
         
         {/* Text Content */}
@@ -46,7 +48,7 @@ function LandingPage() {
           </div>
         </div>
 
-        {/* Features Condensed with Icons */}
+        {/* Features */}
         <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
           <div className="flex flex-col items-center">
             <BriefcaseIcon className="h-10 w-10 text-green-600 mb-2" />
@@ -64,7 +66,11 @@ function LandingPage() {
             <p className="text-sm text-gray-600">Set savings goals for rent, gear, or business upgrades.</p>
           </div>
           <div className="flex flex-col items-center">
-            <img src="https://img.icons8.com/ios-filled/50/34d399/money--v1.png" className="h-10 w-10 mb-2" alt="Cash Flow" />
+            <img
+              src="https://img.icons8.com/ios-filled/50/34d399/money--v1.png"
+              className="h-10 w-10 mb-2"
+              alt="Cash Flow"
+            />
             <h3 className="font-semibold text-green-700">Visualize Cash Flow</h3>
             <p className="text-sm text-gray-600">Understand income vs. expenses at a glance.</p>
           </div>
