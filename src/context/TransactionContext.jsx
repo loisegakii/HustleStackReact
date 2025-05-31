@@ -6,14 +6,11 @@ const TransactionContext = createContext();
 // Create the provider component
 export const TransactionProvider = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
-
-  // Optional: Load transactions from local storage (or API later)
   useEffect(() => {
-    const stored = localStorage.getItem('transactions');
-    if (stored) {
-      setTransactions(JSON.parse(stored));
-    }
-  }, []);
+  const storedTransactions = JSON.parse(localStorage.getItem("transactions")) || [];
+  setTransactions(storedTransactions);
+}, []);
+
 
   // Optional: Persist changes to local storage
   useEffect(() => {
